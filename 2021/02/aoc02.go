@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-var regexpSpace = regexp.MustCompile("\\s")
+var regexpSpace = regexp.MustCompile(`\s`)
 
 type action struct {
 	horizontal int
