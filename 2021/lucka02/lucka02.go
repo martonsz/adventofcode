@@ -1,4 +1,4 @@
-package main
+package lucka02
 
 import (
 	"bufio"
@@ -41,8 +41,8 @@ func parseLine(line string) action {
 }
 
 func partA() {
-	//f, _ := os.Open("02/input-example.txt")
-	f, _ := os.Open("02/input.txt")
+	//f, _ := os.Open("lucka02/input-example.txt")
+	f, _ := os.Open("lucka02/input.txt")
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
@@ -63,8 +63,8 @@ func partA() {
 }
 
 func partB() {
-	// f, _ := os.Open("02/input-example.txt")
-	f, _ := os.Open("02/input.txt")
+	// f, _ := os.Open("lucka02/input-example.txt")
+	f, _ := os.Open("lucka02/input.txt")
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
@@ -90,7 +90,8 @@ func partB() {
 	check(scanner.Err())
 }
 
-func main() {
+func Solve() {
+	fmt.Println("Lucka02")
 	partA()
 	partB()
 }

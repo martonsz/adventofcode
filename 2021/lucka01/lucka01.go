@@ -1,4 +1,4 @@
-package main
+package lucka01
 
 import (
 	"bufio"
@@ -15,7 +15,7 @@ func check(e error) {
 }
 
 func partA() {
-	f, err := os.Open("01/input.txt")
+	f, err := os.Open("lucka01/input.txt")
 	check(err)
 	defer f.Close()
 
@@ -40,8 +40,8 @@ func partA() {
 
 func partB() {
 
-	//dat, _ := os.ReadFile("01/input-example.txt")
-	dat, _ := os.ReadFile("01/input.txt")
+	//dat, _ := os.ReadFile("input-example.txt")
+	dat, _ := os.ReadFile("lucka01/input.txt")
 
 	increase := 0
 	lines := strings.Split(string(dat), "\n")
@@ -65,7 +65,8 @@ func partB() {
 	fmt.Printf("Part B: %v\n", increase)
 }
 
-func main() {
+func Solve() {
+	fmt.Println("Lucka01")
 	partA()
 	partB()
 }
