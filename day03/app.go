@@ -19,17 +19,6 @@ func getInputAsArray(filePath string) []string {
 
 func part1(lines []string) {
 
-	prioMap := make(map[int32]int)
-
-	aIntValue := int('a') - 1
-	for rune := 'a'; rune <= 'z'; rune++ {
-		prioMap[rune] = int(rune) - aIntValue
-	}
-	AIntValue := int('A') - prioMap['z'] - 1
-	for rune := 'A'; rune <= 'Z'; rune++ {
-		prioMap[rune] = int(rune) - AIntValue
-	}
-
 	sum := 0
 	for _, line := range lines {
 		length := len(line)
@@ -44,12 +33,44 @@ func part1(lines []string) {
 	}
 	fmt.Println(sum)
 }
-
-func part2(lines []string) {
-	fmt.Println("TODO")
+func StringToRuneSlice(s string) []rune {
+	var r []rune
+	for _, runeValue := range s {
+		r = append(r, runeValue)
+	}
+	return r
 }
 
+func part2(lines []string) {
+	sum := 0
+
+	for i := 0; i < len(lines); i += 3 {
+		elf1Items := lines[i]
+		elf2Items := lines[i+1]
+		elf3Items := lines[i+2]
+		for item, prio := range prioMap {
+			if strings.ContainsRune(elf1Items, item) &&
+				strings.ContainsRune(elf2Items, item) &&
+				strings.ContainsRune(elf3Items, item) {
+				sum += prio
+			}
+		}
+	}
+	println(sum)
+}
+
+var prioMap = make(map[int32]int)
+
 func main() {
+
+	aIntValue := int('a') - 1
+	for rune := 'a'; rune <= 'z'; rune++ {
+		prioMap[rune] = int(rune) - aIntValue
+	}
+	AIntValue := int('A') - prioMap['z'] - 1
+	for rune := 'A'; rune <= 'Z'; rune++ {
+		prioMap[rune] = int(rune) - AIntValue
+	}
 
 	lines := getInputAsArray("input.txt")
 
