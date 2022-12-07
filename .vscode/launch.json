@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "day06/app.go"
+            "program": "day07/app.go"
         }
     ]
 }
