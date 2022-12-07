@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -23,7 +23,7 @@ func getInputAsArray(filePath string) []string {
 	return lines
 }
 
-func scanDir(lines []string, lineIndex *int64, solution *int64) int64 {
+func scanDir(lines []string, lineIndex *int64, solutionPart1 *int64, solutionPart2 *[]int64) int64 {
 
 	var size int64
 	line := lines[*lineIndex]
@@ -44,18 +44,19 @@ func scanDir(lines []string, lineIndex *int64, solution *int64) int64 {
 	}
 
 	if *lineIndex < lineLength {
-		size += scanDir(lines, lineIndex, solution)
-		// if dirName != "" && size <= 100000 {
+		size += scanDir(lines, lineIndex, solutionPart1, solutionPart2)
 		if dirName != "" {
+			// println(dirName, size)
 			if size < 100000 {
 				// println(dirName, size)
-				*solution += size
+				*solutionPart1 += size
 			}
+			*solutionPart2 = append(*solutionPart2, size)
 
 			if *lineIndex < lineLength {
 				line = lines[*lineIndex]
 				if !strings.HasPrefix(line, "$ cd ..") {
-					size += scanDir(lines, lineIndex, solution)
+					size += scanDir(lines, lineIndex, solutionPart1, solutionPart2)
 				} else {
 					*lineIndex++
 				}
@@ -65,22 +66,29 @@ func scanDir(lines []string, lineIndex *int64, solution *int64) int64 {
 	return size
 }
 
-func part1(lines []string) {
+func solve(part string, lines []string) {
 
 	var lineIndex int64 = 0
-	var solution int64 = 0
+	var solutionPart1 int64 = 0
+	var solutionPart2 []int64
 	var rootSize int64 = 0
-	for lineIndex < lineLength {
-		rootSize += scanDir(lines, &lineIndex, &solution)
-	}
-	if rootSize <= 100000 {
-		solution += rootSize
-	}
-	println(solution)
-}
+	rootSize += scanDir(lines, &lineIndex, &solutionPart1, &solutionPart2)
 
-func part2(lines []string) {
-	fmt.Println("TODO")
+	// part 2
+	if part == "part2" {
+		var totalDiskSpace int64 = 70000000
+		var requiredSpace int64 = 30000000
+		deleteLimit := requiredSpace - (totalDiskSpace - rootSize)
+		sort.Slice(solutionPart2, func(i, j int) bool { return solutionPart2[i] < solutionPart2[j] })
+		for i, size := range solutionPart2 {
+			if size > deleteLimit {
+				println(solutionPart2[i])
+				break
+			}
+		}
+	} else {
+		println(solutionPart1)
+	}
 }
 
 func main() {
@@ -88,9 +96,5 @@ func main() {
 	lines := getInputAsArray("input.txt")
 
 	part := os.Getenv("part")
-	if part == "part2" {
-		part2(lines)
-	} else {
-		part1(lines)
-	}
+	solve(part, lines)
 }
