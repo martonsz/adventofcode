@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -101,21 +102,7 @@ func parseColumns(lines []string, trees []Tree,
 	}
 }
 
-func countVisible(trees []Tree) int {
-	visible := 0
-	for _, tree := range trees {
-		if tree.height > tree.north || tree.height > tree.south || tree.height > tree.east || tree.height > tree.west {
-			visible++
-		}
-	}
-	return visible
-}
-
-func part1(lines []string) {
-
-	rowCount := len(lines)
-	columnCount := len(lines[0])
-	trees := make([]Tree, rowCount*columnCount)
+func parse(trees []Tree, lines []string, rowCount int, columnCount int) {
 
 	splitRow := rowCount / 2
 	splitCol := columnCount / 2
@@ -130,29 +117,103 @@ func part1(lines []string) {
 	//go parseColumns(lines, trees, columnCount, rowCount, 0, columnCount)
 
 	waitGroup.Wait()
-
-	visible := countVisible(trees)
-	println(visible)
-
 }
 
-func part2(lines []string) {
+func countVisible(trees []Tree) int {
+	visible := 0
+	for _, tree := range trees {
+		if tree.height > tree.north || tree.height > tree.south || tree.height > tree.east || tree.height > tree.west {
+			visible++
+		}
+	}
+	return visible
+}
 
-	// for _, line := range lines {
+func countScenicScore(trees []Tree, scenicScores []int64, rowCount int, columnCount int, row int, col int) {
+	// defer waitGroup.Done()
 
-	// }
-	println("TODO")
+	index := (row * columnCount) + col
+	baseHeight := trees[index].height
+	var scenicScore int64 = 1
+
+	// <--
+	viewLength := 0
+	for x := col - 1; x >= 0; x-- {
+		height := trees[(row*columnCount)+x].height
+		viewLength++
+		if baseHeight <= height {
+			break
+		}
+	}
+	scenicScore *= int64(viewLength)
+
+	// -->
+	viewLength = 0
+	for x := col + 1; x < columnCount; x++ {
+		height := trees[(row*columnCount)+x].height
+		viewLength++
+		if baseHeight <= height {
+			break
+		}
+	}
+	scenicScore *= int64(viewLength)
+
+	// up
+	viewLength = 0
+	for y := row - 1; y >= 0; y-- {
+		height := trees[(y*columnCount)+col].height
+		viewLength++
+		if baseHeight <= height {
+			break
+		}
+	}
+	scenicScore *= int64(viewLength)
+
+	// down
+	viewLength = 0
+	for y := row + 1; y < rowCount; y++ {
+		height := trees[(y*columnCount)+col].height
+		viewLength++
+		if baseHeight <= height {
+			break
+		}
+	}
+	scenicScore *= int64(viewLength)
+	scenicScores[index] = scenicScore
+}
+
+func getBestScenicScore(trees []Tree, rowCount int, columnCount int) int64 {
+
+	// waitGroup.Add(rowCount * columnCount)
+	scenicScores := make([]int64, rowCount*columnCount)
+	for row := 0; row < rowCount; row++ {
+		for col := 0; col < columnCount; col++ {
+			countScenicScore(trees, scenicScores, rowCount, columnCount, row, col)
+		}
+	}
+	// waitGroup.Wait()
+
+	sort.Slice(scenicScores, func(i, j int) bool { return scenicScores[i] > scenicScores[j] })
+	return scenicScores[0]
 }
 
 func main() {
 	// defer duration(track("main"))
+
 	// lines := getInputAsArray("input-example.txt")
 	lines := getInputAsArray("input.txt")
 
+	rowCount := len(lines)
+	columnCount := len(lines[0])
+	trees := make([]Tree, rowCount*columnCount)
+	parse(trees, lines, rowCount, columnCount)
+
 	part := os.Getenv("part")
 	if part == "part2" {
-		part2(lines)
+		bestScenicScore := getBestScenicScore(trees, rowCount, columnCount)
+		println(bestScenicScore)
 	} else {
-		part1(lines)
+		visible := countVisible(trees)
+		println(visible)
 	}
 }
