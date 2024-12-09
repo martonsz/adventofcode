@@ -4,6 +4,7 @@ import os
 import regex
 
 pattern = regex.compile(r"XMAS|SAMX")
+pattern2 = regex.compile(r"MS|SM")
 
 def part1(filename: str) -> None:
   with open(filename, "r") as file:
@@ -34,12 +35,30 @@ def part1(filename: str) -> None:
       count += count_in_line("".join(line))
     print(count)
 
+
 def count_in_line(line: str) -> int:
   match = regex.findall(pattern, line, overlapped=True)
   return len(match)
 
+
 def part2(filename: str) -> None:
-  pass
+  count = 0
+  with open(filename, "r") as file:
+    text = [line.strip() for line in file.readlines()]
+    max_col = len(text[0])
+    max_row = len(text)
+    for r in range(max_row):
+      for c in range(max_col):
+        if r == 0 or r == max_row - 1 or c == 0 or c == max_col -1:
+          continue
+        if text[r][c] == 'A':
+          diag = text[r-1][c-1] + text[r+1][c+1]
+          if pattern2.search(diag):
+            diag = text[r-1][c+1] + text[r+1][c-1]
+            if pattern2.search(diag):
+              count += 1
+    print(count)
+
 
 def main():
   env_part = os.getenv("part")

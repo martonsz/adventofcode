@@ -13,8 +13,8 @@
             "console": "integratedTerminal",
             "args": [
                 "-i",
-                "example.txt",
-                "-1"
+                "input.txt",
+                "-2"
             ],
             "cwd": "${fileDirname}"
         }
