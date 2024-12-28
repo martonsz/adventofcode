@@ -11,7 +11,7 @@
             "args": [
                 "-i",
                 "input.txt",
-                "-2",
+                "-1",
                  "-b"
             ],
             "cwd": "${fileDirname}",
