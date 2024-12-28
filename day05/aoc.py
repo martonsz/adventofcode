@@ -5,6 +5,10 @@ import os
 ruleDict = {}
 
 def part1(filename: str) -> None:
+  print(solve(filename, True))
+
+
+def solve(filename: str, part1: bool) -> None:
   global ruleDict, afterDict
   sum = 0
   with open(filename, "r") as file:
@@ -17,9 +21,10 @@ def part1(filename: str) -> None:
       else:
         to_sort = [x for x in line.strip().split(",")]
         sorted = quick_sort(to_sort)
-        if to_sort == sorted:
+        if part1 and to_sort == sorted or not part1 and to_sort != sorted:
           sum += int(sorted[len(sorted)//2])
-    print(sum)
+    return sum
+
 
 def quick_sort(lst: list) -> None:
   if len(lst) <= 1:
@@ -40,8 +45,7 @@ def quick_sort(lst: list) -> None:
 
 
 def part2(filename: str) -> None:
-  pass
-
+  print(solve(filename, False))
 
 def main():
   env_part = os.getenv("part")
