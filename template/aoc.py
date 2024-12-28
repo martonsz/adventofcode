@@ -36,9 +36,18 @@ def main():
     const="part2",
     help="Set part to 'part2'",
   )
+  parser.add_argument(
+    "-b",
+    "--begining",
+    action="store_true",
+    help="Pring row in the begining. On windows vscode prints metadata in the beginning without a new line",
+  )
   args = parser.parse_args()
 
   part = args.part if args.part else env_part if env_part else "part1"
+
+  if args.begining:
+    print("")
 
   if part == "part1":
     part1(args.input)
