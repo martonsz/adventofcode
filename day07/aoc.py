@@ -1,10 +1,35 @@
 #!/usr/bin/env python
 import argparse
 import os
-
+import itertools
 
 def part1(filename: str) -> None:
-  pass
+  with open(filename, "r") as file:
+    answerSum = 0
+    for line in file:
+      answer, numbers = line.split (":")
+      numbers = list(map(int, numbers.strip().split()))
+      combinations = itertools.product("+*", repeat=len(numbers)-1)
+      for combination in combinations:
+        i = 0
+        sum = 0
+        for group in itertools.pairwise(numbers):
+          if i == 0:
+            sum = calculate(group[0], combination[i], group[1])
+          else:
+            sum = calculate(sum, combination[i], group[1])
+          i += 1
+        if sum == int(answer):
+          answerSum += int(sum)
+          break
+    print(answerSum)
+
+
+def calculate(left: int, symbol: str, right: int) -> int:
+  if symbol == "+":
+    return left + right
+  elif symbol == "*":
+    return left * right
 
 
 def part2(filename: str) -> None:
