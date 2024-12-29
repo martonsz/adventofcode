@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 import os
+import networkx as nx
 
 class Node:
     def __init__(self, name):
@@ -48,7 +49,19 @@ def part1(filename: str) -> None:
   print(len(count))
 
 def part2(filename: str) -> None:
-  pass
+  graph = nx.Graph()
+  with open(filename, "r") as file:
+    for line in file:
+      node0, node1 = line.strip().split("-")
+      graph.add_edge(node0, node1)
+
+
+    largest = []
+    cliques = nx.enumerate_all_cliques(graph)
+    for clique in cliques:
+      if len(clique) > len(largest):
+         largest = clique
+    print(",".join(sorted(largest)))
 
 
 def main():
@@ -76,6 +89,13 @@ def main():
     const="part2",
     help="Set part to 'part2'",
   )
+  parser.add_argument(
+    "-b",
+    "--begining",
+    action="store_true",
+    help="Pring row in the begining. On windows vscode prints metadata in the beginning without a new line",
+  )
+
   args = parser.parse_args()
 
   part = args.part if args.part else env_part if env_part else "part1"
